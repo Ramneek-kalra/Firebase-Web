@@ -1,0 +1,90 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <title>Firebase Storage</title>
+    <style media="screen">
+       body {
+         display: flex;
+         min-height: 100vh;
+         align-items: center;
+         justify-content: center;
+         flex-direction: column;
+         width: 100%;
+         padding: 0;
+         margin: 0;
+       }
+       #uploader {
+         -webkit-appearance: none;
+         appearance: none;
+         width: 50%;
+         margin-bottom: 10px;
+       }
+    </style>
+
+  </head>
+  <body>
+
+    <progress value="0" max="100" id="uploader"></progress>
+    <input type="file" value="upload" id="fileButton" multiple />
+
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCjU6CHprWI9Cm_CQWZfSnrmgGTHX8q1I8",
+        authDomain: "practice-4fe85.firebaseapp.com",
+        databaseURL: "https://practice-4fe85.firebaseio.com",
+        projectId: "practice-4fe85",
+        storageBucket: "practice-4fe85.appspot.com",
+        messagingSenderId: "398624076289"
+      };
+      firebase.initializeApp(config);
+
+
+
+    // Get Elements
+
+    var uploader = document.getElementById("uploader");
+    var fileButton = document.getElementById("fileButton");
+
+    //Listen for file selection
+    fileButton.addEventListener('change', function(e) {
+
+      
+      
+      for(var i = 0; i<e.target.files.length; i++) {
+      
+      //Get file
+      var file = e.target.files[i];
+
+      //Create a storage ref
+      var storageRef = firebase.storage().ref('images/' + file.name);
+
+      //Upload file
+      var task = storageRef.put(file);
+
+      //Update progress bar 
+      task.on('state_changed', 
+        function progress(snapshot) {
+          var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          uploader.value = percentage;
+          if (percentage == 100) {
+            alert("File Uploaded Successfully");
+          }
+        },
+        function error(err) {
+
+        },
+        function complete(percentage) {
+        
+        }
+      );
+      }
+      
+
+
+    });
+  </script>
+
+  </body>
+</html>
